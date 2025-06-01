@@ -4,10 +4,9 @@ module.exports = {
       {
         protocol: "https",
         hostname: "res.cloudinary.com",
-        port: "",
-        pathname: "/my-account/**",
-        search: "",
+        pathname: "/dehranayi/image/upload/**", // ✅ match your Cloudinary path
       },
     ],
+    
   },
 };
