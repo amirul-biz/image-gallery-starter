@@ -10,7 +10,6 @@ import Modal from "../components/Modal";
 import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
 
-
 const Home = () => {
   const router = useRouter();
   const { photoId } = router.query;
@@ -29,8 +28,7 @@ const Home = () => {
   useEffect(() => {
     fetchImages();
   }, []);
-  
-  
+
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
     if (lastViewedPhoto && !photoId) {
@@ -95,7 +93,7 @@ const Home = () => {
               }}
               onUpload={(result, widget) => {
                 console.log("Upload succeeded", result);
-                fetchImages()
+                fetchImages();
               }}
             >
               {({ open }) => (
@@ -109,7 +107,7 @@ const Home = () => {
               )}
             </CldUploadWidget>
           </div>
-          {images.map(({ id, public_id, format, blurDataUrl }) => (
+          {/* {images.map(({ id, public_id, format, blurDataUrl }) => (
             <Link
               key={id}
               href={`/?photoId=${id}`}
@@ -133,7 +131,32 @@ const Home = () => {
                   25vw"
               />
             </Link>
+          ))} */}
+          {images.map(({ id, public_id, format }) => (
+            <Link
+              key={id}
+              href={`/?photoId=${id}`}
+              as={`/p/${id}`}
+              ref={id === Number(lastViewedPhoto) ? lastViewedPhotoRef : null}
+              shallow
+              className="after:content group relative mb-5 block w-full cursor-zoom-in after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight"
+            >
+              <Image
+                alt="Next.js Conf photo"
+                className="transform rounded-lg brightness-90 transition will-change-auto group-hover:brightness-110"
+                style={{ transform: "translate3d(0, 0, 0)" }}
+                // Removed placeholder="blur" and blurDataURL props here:
+                src={`https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_720/${public_id}.${format}`}
+                width={720}
+                height={480}
+                sizes="(max-width: 640px) 100vw,
+             (max-width: 1280px) 50vw,
+             (max-width: 1536px) 33vw,
+             25vw"
+              />
+            </Link>
           ))}
+          
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">
@@ -171,4 +194,3 @@ const Home = () => {
 };
 
 export default Home;
-

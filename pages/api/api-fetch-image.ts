@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ImageProps } from "../../utils/types";
 import cloudinary from "../../utils/cloudinary";
-import getBase64ImageUrl from "../../utils/generateBlurPlaceholder";
 
 export default async function handler(
   req: NextApiRequest,
@@ -19,14 +18,8 @@ export default async function handler(
       width: result.width,
       public_id: result.public_id,
       format: result.format,
+      // Removed blurDataUrl field to save transformations
     }));
-
-    const blurImagePromises = reducedResults.map(getBase64ImageUrl);
-    const imagesWithBlurDataUrls = await Promise.all(blurImagePromises);
-
-    for (let i = 0; i < reducedResults.length; i++) {
-      reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[i];
-    }
 
     res.status(200).json({ images: reducedResults });
   } catch (err) {

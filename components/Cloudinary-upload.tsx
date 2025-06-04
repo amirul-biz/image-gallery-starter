@@ -8,7 +8,9 @@ export default function UploadButton() {
     uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
     signatureEndpoint="/api/api-file-upload"
       options={{
-        folder: process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER || 'amirul-aisyah'
+        folder: process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER || 'amirul-aisyah',
+        resourceType: 'image', // Ensures only images are accepted
+        clientAllowedFormats: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'], // Image formats only
       }}
     >
       {({ open }) => (
