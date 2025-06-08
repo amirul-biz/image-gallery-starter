@@ -49,7 +49,7 @@ const Home = () => {
   }
 
   const fetchImages = async () => {
-    const res = await fetch(`/api/api-fetch-image?nocache=${Date.now()}`);
+    const res = await fetch(`/api/api-fetch-image`);
     const data = await res.json();
     setLoading(false);
     setImages(data.images);
