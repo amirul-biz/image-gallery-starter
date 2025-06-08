@@ -7,21 +7,31 @@ export default async function handler(
   res: NextApiResponse<{ images: ImageProps[] }>
 ) {
   try {
-    const results = await cloudinary.v2.search
-      .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
-      .max_results(400)
-      .execute();
+    let allResults: ImageProps[] = [];
+    let nextCursor: string | undefined = undefined;
+    let idCounter = 0;
 
-    const reducedResults: ImageProps[] = results.resources.map((result, i) => ({
-      id: i,
-      height: result.height,
-      width: result.width,
-      public_id: result.public_id,
-      format: result.format,
-      // Removed blurDataUrl field to save transformations
-    }));
+    do {
+      const results = await cloudinary.v2.search
+        .expression(`folder:${process.env.CLOUDINARY_FOLDER}/*`)
+        .max_results(500) // Max allowed by Cloudinary
+        .next_cursor(nextCursor)
+        .execute();
 
-    res.status(200).json({ images: reducedResults });
+      const images: ImageProps[] = results.resources.map((result) => ({
+        id: idCounter++,
+        height: result.height,
+        width: result.width,
+        public_id: result.public_id,
+        format: result.format,
+        // Optional: skip blurDataURL to save transformations
+      }));
+
+      allResults.push(...images);
+      nextCursor = results.next_cursor;
+    } while (nextCursor);
+
+    res.status(200).json({ images: allResults });
   } catch (err) {
     console.error(err);
     res.status(500).json({ images: [] });
