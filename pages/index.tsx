@@ -20,8 +20,8 @@ const Home = () => {
   const maxImageQuota = Number(process.env.NEXT_PUBLIC_MAX_IMAGE_UPLOAD);
   const [isHitMaxQuotaLimit, setIsHitMaxQuotaLimit] = useState(false);
   const [checking, setChecking] = useState(false);
-  const [canUpload, setCanUpload] = useState(true);
   const [spareImageCount, setSpareImageCount] = useState(0);
+  const [widgetOpenFn, setWidgetOpenFn] = useState(null);
 
   async function checkLimit() {
     setChecking(true);
@@ -30,13 +30,15 @@ const Home = () => {
         `/api/api-check-upload-limit?nocache=${Date.now()}`,
         {
           method: "GET",
-          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-store",
+          },
         }
       );
+
       const data = await res.json();
       if (res.ok) {
         setSpareImageCount(data.spareImageCount);
-        setCanUpload(!data.limitReached);
         setChecking(false);
         return !data.limitReached;
       } else {
@@ -150,14 +152,15 @@ const Home = () => {
                       if (checking) return; // avoid spamming
                       const allowed = await checkLimit();
                       if (allowed) {
-                        open();
+                        setTimeout(() => {
+                          open();
+                        }, 100);
                       } else {
                         alert("Upload limit reached, cannot open widget");
                         setIsHitMaxQuotaLimit(true);
                       }
                     }}
                     type="button"
-                    disabled={checking || !canUpload}
                   >
                     {checking ? "Checking..." : "Upload"}
                   </button>
