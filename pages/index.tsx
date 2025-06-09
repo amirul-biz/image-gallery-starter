@@ -27,15 +27,11 @@ const Home = () => {
     setChecking(true);
     try {
       const res = await fetch(
-        `/api/api-check-upload-limit?nocache=${Date.now()}`,
+        `/api/api-check-upload-limit`,
         {
           method: "GET",
-          headers: {
-            "Cache-Control": "no-store",
-          },
         }
       );
-
       const data = await res.json();
       if (res.ok) {
         setSpareImageCount(data.spareImageCount);
@@ -231,3 +227,4 @@ const Home = () => {
 };
 
 export default Home;
+

@@ -11,7 +11,6 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  res.setHeader("Cache-Control", "no-store");
 
   try {
     let totalCount = 0;
@@ -34,12 +33,15 @@ export default async function handler(req, res) {
 
     totalSpareImageCount = maxLimit - totalCount;
 
+    const debugId = Math.floor(Math.random() * 1000000);
+
     return res
       .status(200)
       .json({
         limitReached: totalCount >= maxLimit,
         totalCount,
         spareImageCount: totalSpareImageCount,
+        debugKey: debugId
       });
   } catch (error) {
     console.error("Check limit error:", error);
