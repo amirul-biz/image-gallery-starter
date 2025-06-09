@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import Modal from "../components/Modal";
 import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
+import downloadPhoto from "../utils/downloadPhoto";
 
 const Home = () => {
   const router = useRouter();
@@ -26,12 +27,9 @@ const Home = () => {
   async function checkLimit() {
     setChecking(true);
     try {
-      const res = await fetch(
-        `/api/api-check-upload-limit`,
-        {
-          method: "GET",
-        }
-      );
+      const res = await fetch(`/api/api-check-upload-limit`, {
+        method: "GET",
+      });
       const data = await res.json();
       if (res.ok) {
         setSpareImageCount(data.spareImageCount);
@@ -173,7 +171,7 @@ const Home = () => {
             </p>
           ) : (
             <div className="mb-10 flex flex-col items-center justify-center">
-              <div className="relative w-full max-w-3xl space-y-5 px-4">
+              {/* <div className="relative w-full max-w-3xl space-y-5 px-4">
                 {images
                   .slice(0, currentIndex + 1)
                   .map(({ id, public_id, format }, i) => (
@@ -201,6 +199,40 @@ const Home = () => {
                       />
                     </div>
                   ))}
+              </div> */}
+              <div className="relative w-full max-w-3xl space-y-5 px-4">
+                {images
+                  .slice(0, currentIndex + 1)
+                  .map(({ id, public_id, format }, i) => {
+                    const imageUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto:eco,w_480,dpr_auto/${public_id}.${format}`;
+                    const downloadFilename = `${public_id}.${format}`;
+
+                    return (
+                      <div key={id} className="relative">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            downloadPhoto(imageUrl, downloadFilename)
+                          }
+                          className="absolute right-2 top-2 z-10 rounded-full bg-white/80 px-3 py-1 text-xs text-black shadow-md backdrop-blur-sm hover:bg-white"
+                        >
+                          Download
+                        </button>
+                        <Image
+                          loading="lazy"
+                          placeholder="blur"
+                          blurDataURL="data:image/png;base64,iVBORw0K..."
+                          alt={`Photo ${i + 1}`}
+                          className="rounded-lg brightness-90 transition"
+                          style={{ transform: "translate3d(0, 0, 0)" }}
+                          src={imageUrl}
+                          width={720}
+                          height={480}
+                          sizes="100vw"
+                        />
+                      </div>
+                    );
+                  })}
               </div>
               {currentIndex < images.length - 1 && (
                 <button
@@ -227,4 +259,3 @@ const Home = () => {
 };
 
 export default Home;
-
