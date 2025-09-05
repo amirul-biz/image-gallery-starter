@@ -204,7 +204,7 @@ const Home = () => {
                 {images
                   .slice(0, currentIndex + 1)
                   .map(({ id, public_id, format }, i) => {
-                    const imageUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/f_auto,q_auto:eco,w_480,dpr_auto/${public_id}.${format}`;
+                    const imageUrl = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${public_id}.${format}`;
                     const downloadFilename = `${public_id}.${format}`;
 
                     return (
