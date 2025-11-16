@@ -119,7 +119,7 @@ const Home = () => {
                 options={{
                   folder:
                     process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER ||
-                    "amirul-aisyah",
+                    "photobook",
                   resourceType: "image", // Ensures only images are accepted
                   clientAllowedFormats: [
                     "jpg",
